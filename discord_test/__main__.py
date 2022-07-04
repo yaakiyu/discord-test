@@ -1,10 +1,11 @@
 # discord test - cli interface
 import sys
+import discord_test
 
 
 def main() -> None:
-    print("Discord Test version 0.0.1 by yaakiyu")
-    print("Discord Test is a test program for discord.py library")
+    print(f"Discord Test version {discord_test.__version__} by yaakiyu loading...")
+    discord_test.load_config()
 
 
 if __name__ == '__main__':
