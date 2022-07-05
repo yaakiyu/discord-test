@@ -5,7 +5,10 @@ import os
 import json
 
 
-__all__ = ["load_config", "write_config"]
+__all__ = ["LANGUAGES", "load_config", "write_config"]
+
+
+LANGUAGES = ["en", "ja"]
 
 
 def _check_config_file() -> bool:
@@ -16,7 +19,7 @@ def _check_config_file() -> bool:
 
 def load_config() -> dict:
     "Loads config."
-    if not _check_config_file():
+    if _check_config_file():
         with open(".discord_test/config.json", "r", encoding="utf-8") as file:
             return json.load(file)
     return {"language": "en"}
