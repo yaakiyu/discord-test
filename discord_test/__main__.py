@@ -10,8 +10,6 @@ def main() -> None:
     print(f"Discord Test version {discord_test.__version__} by yaakiyu loading...")
     config = discord_test.load_config()
 
-    import discord
-
     if not config["language"] in discord_test.configure.LANGUAGES:
         config["language"] = discord_test.configure.LANGUAGES[0]
 
