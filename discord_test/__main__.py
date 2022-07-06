@@ -2,6 +2,7 @@
 import discord_test
 
 import importlib
+import asyncio
 import json
 
 
@@ -27,6 +28,12 @@ def main() -> None:
         )
     except ImportError:
         return print(print_data["error_file"])
+
+    token = input("TOKEN? ")
+    loop = asyncio.get_event_loop()
+    asyncio.ensure_future(module.bot.start(token))
+    asyncio.ensure_future(discord_test.interpreter.main(module.bot, config))
+    loop.run_forever()
 
 
 if __name__ == '__main__':
