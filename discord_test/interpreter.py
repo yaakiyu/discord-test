@@ -1,6 +1,6 @@
 # discord Test - Interpreter
 
-from typing import Union
+from typing import Union, Any
 
 from discord.ext import commands
 import discord
@@ -8,10 +8,13 @@ import discord
 from aioconsole import aprint, ainput
 
 
-async def ask_id(
-    bot: Union[commands.Bot, discord.Client],
+__all__ = ["main"]
+
+
+async def _ask_id(
+    bot: Union[commands.Bot, discord.Client, discord.Guild],
     mode: str, function: str
-) -> int:
+) -> Any:
     "Asks any ID."
     await aprint(f"Please type {mode} to go on.")
     while True:
@@ -23,16 +26,36 @@ async def ask_id(
         if not obj:
             await aprint(f"{mode} not found.")
             continue
-        return int(id_)
+        return obj
+
+
+async def bot_wait_for_loop(
+    bot: Union[commands.Bot, discord.Client], event: str, 
+    channel: discord.TextChannel, config: dict
+) -> None:
+    pass
+
+
+async def wait_for_send_loop(
+    bot: Union[commands.Bot, discord.Client],
+    channel: discord.TextChannel, config: dict
+) -> None:
+    pass
 
 
 async def main(bot: Union[commands.Bot, discord.Client], config: dict) -> None:
     "Runs interpreter."
     await bot.wait_until_ready()
-    print("Discord Test - Interpreter")
-    # ユーザーIDを入力。 TODO: これら全てdefaultをconfigから読み込む
-    await ask_id(bot, "User ID", "get_user")
-    # サーバーIDを入力。
-    await ask_id(bot, "Guild ID", "get_guild")
+    await aprint("Discord Test - Interpreter")
+    # サーバーIDを入力。 TODO: これら全てdefaultをconfigから読み込む
+    guild: discord.Guild = await _ask_id(bot, "Guild ID", "get_guild")
+    # ユーザーIDを入力。
+    user: discord.Member = await _ask_id(guild, "User ID", "get_member")
     # チャンネルIDを入力。
-    await ask_id(bot, "Channel ID", "get_channel")
+    channel: discord.TextChannel = await _ask_id(
+        guild, "Channel ID", "get_channel"
+    )
+
+    async for message in channel.history(limit=10):
+        await aprint(f">{message.author}: {message.content.splitlines()[0]}")
+
