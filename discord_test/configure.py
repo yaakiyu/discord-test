@@ -1,5 +1,6 @@
 # discord test - configure
 from typing import Optional
+from discord_test.types_ import Config
 
 import os
 import json
@@ -17,7 +18,7 @@ def _check_config_file() -> bool:
         and os.path.isfile(".discord_test/config.json"))
 
 
-def load_config() -> dict:
+def load_config() -> Config:
     "Loads config."
     if _check_config_file():
         with open(".discord_test/config.json", "r", encoding="utf-8") as file:
@@ -25,7 +26,7 @@ def load_config() -> dict:
     return {"language": "en"}
 
 
-def write_config(config: Optional[dict] = None) -> None:
+def write_config(config: Optional[Config] = None) -> None:
     "Writes config data to config file."
     if not os.path.isdir(".discord_test"):
         os.mkdir(".discord_test")

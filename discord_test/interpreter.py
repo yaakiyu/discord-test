@@ -1,6 +1,7 @@
 # discord Test - Interpreter
 
 from typing import Union, Any
+from discord_test.types_ import Config
 
 from discord.ext import commands
 import discord
@@ -30,20 +31,22 @@ async def _ask_id(
 
 
 async def bot_wait_for_loop(
-    bot: Union[commands.Bot, discord.Client], event: str, 
-    channel: discord.TextChannel, config: dict
+    bot: Union[commands.Bot, discord.Client], 
+    channel: discord.TextChannel, config: Config
 ) -> None:
-    pass
+    "Forever waits for event and prints it."
+    while True:
+        message = await bot.wait_for("message")
 
 
 async def wait_for_send_loop(
     bot: Union[commands.Bot, discord.Client],
-    channel: discord.TextChannel, config: dict
+    channel: discord.TextChannel, config: Config
 ) -> None:
     pass
 
 
-async def main(bot: Union[commands.Bot, discord.Client], config: dict) -> None:
+async def main(bot: Union[commands.Bot, discord.Client], config: Config) -> None:
     "Runs interpreter."
     await bot.wait_until_ready()
     await aprint("Discord Test - Interpreter")
