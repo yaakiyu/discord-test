@@ -10,11 +10,11 @@ def main() -> None:
     print(f"Discord Test version {discord_test.__version__} by yaakiyu loading...")
     config = discord_test.load_config()
 
-    if not config["language"] in discord_test.configure.LANGUAGES:
-        config["language"] = discord_test.configure.LANGUAGES[0]
+    if config.get("language", None) not in discord_test.configure.LANGUAGES:
+        config["language"] = discord_test.configure.LANGUAGES[0]  # type: ignore
 
     # 言語ファイル読み込み
-    with open(f"./languages/{config['language']}.json",
+    with open(f"./languages/{config['language']}.json",  # type: ignore
               "r", encoding="utf-8") as file:
         print_data = json.load(file)
 

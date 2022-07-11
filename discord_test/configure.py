@@ -23,7 +23,7 @@ def load_config() -> Config:
     if _check_config_file():
         with open(".discord_test/config.json", "r", encoding="utf-8") as file:
             return json.load(file)
-    return {"language": "en"}
+    return {}
 
 
 def write_config(config: Optional[Config] = None) -> None:
@@ -31,7 +31,7 @@ def write_config(config: Optional[Config] = None) -> None:
     if not os.path.isdir(".discord_test"):
         os.mkdir(".discord_test")
     if config is None:
-        config = {"language": "en"}
+        config = {}
 
     with open(".discord_test/config.json", "w", encoding="utf-8") as file:
         json.dump(config, file, indent=4)
