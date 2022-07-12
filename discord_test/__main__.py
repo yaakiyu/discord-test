@@ -2,8 +2,6 @@
 
 import importlib
 import asyncio
-import json
-import os
 
 import discord_test
 
@@ -16,12 +14,7 @@ def main() -> None:
         config["language"] = discord_test.configure.LANGUAGES[0]  # type: ignore
 
     # 言語ファイル読み込み
-    now_file_path = os.path.dirname(os.path.abspath(__file__))
-    with open(
-        os.path.join(now_file_path, "languages", f"{config['language']}.json"),  # type: ignore
-        "r", encoding="utf-8"
-    ) as file:
-        print_data = json.load(file)
+    print_data = importlib.import_module("discord_test.languages." + config["language"]).data
 
     print(print_data["welcome"])
     run_file = input("file Path? ")
