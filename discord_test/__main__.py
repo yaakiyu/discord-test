@@ -1,10 +1,11 @@
 # discord test - cli interface
-import discord_test
 
 import importlib
 import asyncio
 import json
 import os
+
+import discord_test
 
 
 def main() -> None:
@@ -15,8 +16,11 @@ def main() -> None:
         config["language"] = discord_test.configure.LANGUAGES[0]  # type: ignore
 
     # 言語ファイル読み込み
-    with open(f"{os.getcwd()}/languages/{config['language']}.json",  # type: ignore
-              "r", encoding="utf-8") as file:
+    now_file_path = os.path.dirname(os.path.abspath(__file__))
+    with open(
+        os.path.join(now_file_path, "languages", f"{config['language']}.json"),  # type: ignore
+        "r", encoding="utf-8"
+    ) as file:
         print_data = json.load(file)
 
     print(print_data["welcome"])
