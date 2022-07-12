@@ -4,6 +4,7 @@ import discord_test
 import importlib
 import asyncio
 import json
+import os
 
 
 def main() -> None:
@@ -14,7 +15,7 @@ def main() -> None:
         config["language"] = discord_test.configure.LANGUAGES[0]  # type: ignore
 
     # 言語ファイル読み込み
-    with open(f"./languages/{config['language']}.json",  # type: ignore
+    with open(f"{os.getcwd()}/languages/{config['language']}.json",  # type: ignore
               "r", encoding="utf-8") as file:
         print_data = json.load(file)
 
