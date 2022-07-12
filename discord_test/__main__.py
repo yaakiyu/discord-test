@@ -32,3 +32,7 @@ def main() -> None:
     asyncio.ensure_future(module.bot.start(token))
     asyncio.ensure_future(discord_test.interpreter.main(module.bot, config))
     loop.run_forever()
+
+
+if __name__ == "__main__":
+    main()
