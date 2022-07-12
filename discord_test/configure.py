@@ -1,9 +1,10 @@
 # discord test - configure
 from typing import Optional
-from discord_test.types_ import Config
 
 import os
 import json
+
+from discord_test.types_ import Config
 
 
 __all__ = ["LANGUAGES", "load_config", "write_config"]
