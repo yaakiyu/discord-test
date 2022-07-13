@@ -81,13 +81,16 @@ async def _ask_id(
                 index = -1
             else:
                 index += 1
-        id_ = await ainput("> ")
+        id_ = await ainput("")
         if id_ is None:
             continue
         if not id_.isdigit():
             await aprint(f"Invalid {mode}.")
             continue
-        obj = getattr(bot, function)(int(id_))
+        try:
+            obj = objects[index - 1][int(id_)]
+        except IndexError:
+            obj = getattr(bot, function)(int(id_))
         if not obj:
             await aprint(f"{mode} not found.")
             continue
@@ -100,8 +103,15 @@ async def bot_wait_for_loop(
 ) -> None:
     "Forever waits for event and prints it."
     while True:
-        message = await bot.wait_for("message", check=lambda m: m.channel == channel)
-        await aprint(f">{message.author}: {message.content.splitlines()[0]}")
+        message = await bot.wait_for(
+            "message",
+            check=lambda m: m.channel == channel and m.author != bot.user
+        )
+        try:
+            content = message.content.splitlines()[0]
+        except IndexError:
+            content = message.content or "None"
+        await aprint(f">{message.author}: {content}")
 
 
 async def wait_for_send_loop(
