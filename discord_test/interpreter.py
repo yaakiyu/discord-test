@@ -11,10 +11,10 @@ from discord_test.types_ import Config
 from discord_test.utils import split_list
 
 
-__all__ = ["main", "messaging"]
+__all__ = ["run_interpreter", "messaging"]
 
 
-async def main(bot: Union[commands.Bot, discord.Client], config: Config) -> None:
+async def run_interpreter(bot: Union[commands.Bot, discord.Client], config: Config) -> None:
     "Runs interpreter."
     await aprint("Discord Test - Interpreter")
     await aprint("Waiting until ready...")
@@ -37,7 +37,12 @@ async def main(bot: Union[commands.Bot, discord.Client], config: Config) -> None
             )
             mode = await ainput("Mode: ")
         if mode in ["test", "chat"]:
-            await selecting(bot, config)
+            try:
+                await selecting(bot, config)
+            except Exception as err:
+                await aprint(f"An Error has occurred: {err}")
+                await aprint("Please contact to the developer.")
+                continue
         elif mode == "settings":
             pass
         else:
@@ -51,7 +56,8 @@ async def messaging(
 ) -> None:
     "Messaging on a discord channel."
     async for message in channel.history(limit=10):
-        await aprint(f">{message.author}: {message.content.splitlines()[0]}")
+        content = message.content if len(message.content) != 0 else message.content.splitlines()[0]
+        await aprint(f">{message.author}: {content}")
 
     message_task = bot.loop.create_task(bot_wait_for_loop(bot, channel, config))
     input_task = bot.loop.create_task(wait_for_send_loop(bot, user, channel, config, mode))
@@ -72,18 +78,21 @@ async def _ask_id(
     index = 0
 
     while True:
+        index_flag = True
         # objectsを10個ずつ表示するシステム。
-        if index != -1:
+        if index != -1 and index_flag:
             await aprint("\033[2A" + "\n".join(
-                "{0.name}({0.id})".format(m) for m in objects[index]
+                f"{m.name}({m.id})" for m in objects[index]
             ))
             if index == len(objects) - 1:
                 index = -1
             else:
                 index += 1
-        id_ = await ainput("")
+        id_ = await ainput("> ")
         if id_ is None:
+            index_flag = True
             continue
+        index_flag = False
         if not id_.isdigit():
             await aprint(f"Invalid {mode}.")
             continue
@@ -125,11 +134,11 @@ async def wait_for_send_loop(
         except (EOFError, KeyboardInterrupt):
             return
         if mode == "test":
-            msg = await channel.send(content)
+            msg = await channel.send(content or "...")
             msg.author = user
             bot.dispatch("message", msg)
         else:
-            await channel.send(content) 
+            await channel.send(content)
 
 
 async def selecting(
@@ -185,12 +194,13 @@ async def selecting(
                         await aprint("user not found.")
                         continue
                     user = us
-                try:
-                    user: discord.Member = await _ask_id(
-                        guild, "User ID", "get_member"
-                    )
-                except (EOFError, KeyboardInterrupt):
-                    break
+                else:
+                    try:
+                        user: discord.Member = await _ask_id(
+                            guild, "User ID", "get_member"
+                        )
+                    except (EOFError, KeyboardInterrupt):
+                        break
 
                 # メッセージングを開始。
                 await messaging(bot, channel, user, config, mode)
