@@ -15,3 +15,4 @@ class Config(TypedDict, total=False):
 
     # TOKEN
     token: str
+    run_file: str

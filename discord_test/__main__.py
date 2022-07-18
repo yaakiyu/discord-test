@@ -5,6 +5,8 @@ import asyncio
 
 import discord_test
 
+import discord
+
 
 def main() -> None:
     print(f"Discord Test version {discord_test.__version__} by yaakiyu loading...")
@@ -19,21 +21,24 @@ def main() -> None:
     ).data
 
     print(print_data["welcome"])
-    run_file = input("file Path? ")
+    run_file = config.get("run_file") or input("file Path? ")
     try:
         module = importlib.import_module(
             run_file.replace(".py", "").replace("/", ".").replace("\\", ".")
         )
-    except ImportError:
+    except ModuleNotFoundError:
         return print(print_data["error_file"])
 
-    token = input("TOKEN? ")
+    token = config.get("token") or input("TOKEN? ")
     asyncio.run(async_main(module, token, config))
 
 
 async def async_main(module, token, config) -> None:
     loop = asyncio.get_event_loop()
-    asyncio.ensure_future(module.bot.start(token))
+    asyncio.ensure_future(getattr(
+        module, config.get("client_obj", "bot"),
+        discord.Client(intents=discord.Intents.default())
+    ).start(token))
     asyncio.ensure_future(discord_test.interpreter.run_interpreter(module.bot, config))
     loop.run_forever()
 
