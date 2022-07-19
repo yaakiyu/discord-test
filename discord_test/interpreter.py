@@ -114,7 +114,7 @@ async def bot_wait_for_loop(
     while True:
         message = await bot.wait_for(
             "message",
-            check=lambda m: m.channel == channel and m.author != bot.user
+            check=lambda m: m.channel == channel
         )
         try:
             content = message.content.splitlines()[0]
