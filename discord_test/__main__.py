@@ -35,12 +35,11 @@ def main() -> None:
 
 async def async_main(module, token, config) -> None:
     loop = asyncio.get_event_loop()
-    asyncio.ensure_future(getattr(
+    loop.create_task(getattr(
         module, config.get("client_obj", "bot"),
         discord.Client(intents=discord.Intents.default())
     ).start(token))
-    asyncio.ensure_future(discord_test.interpreter.run_interpreter(module.bot, config))
-    loop.run_forever()
+    loop.create_task(discord_test.interpreter.run_interpreter(module.bot, config))
 
 
 if __name__ == "__main__":
