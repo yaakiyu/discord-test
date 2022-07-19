@@ -40,6 +40,8 @@ async def async_main(module, token, config) -> None:
         discord.Client(intents=discord.Intents.default())
     ).start(token))
     loop.create_task(discord_test.interpreter.run_interpreter(module.bot, config))
+    while True:
+        await asyncio.sleep(100000000)
 
 
 if __name__ == "__main__":
